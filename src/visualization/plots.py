@@ -1,0 +1,69 @@
+"""Plots for the report. Every figure is saved as PNG in results/figures/."""
+import matplotlib
+
+matplotlib.use("Agg")                    # save to file, no window
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.lines import Line2D
+from sklearn.decomposition import PCA
+
+# Fixed colour + marker per genre (index = label). Colour-blind-safe palette;
+# the marker shape is a second cue so genres are not told apart by colour alone.
+GENRE_NAMES = ["Classical", "Country", "Disco", "Hip-Hop"]
+GENRE_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100"]
+GENRE_MARKERS = ["o", "s", "^", "D"]
+INK = "#333333"
+GRID = "#e5e5e5"
+
+
+def style_axes(ax):
+    ax.grid(color=GRID, linewidth=0.8)
+    ax.set_axisbelow(True)
+    for side in ["top", "right"]:
+        ax.spines[side].set_visible(False)
+    for side in ["left", "bottom"]:
+        ax.spines[side].set_color("#999999")
+    ax.tick_params(colors=INK, labelsize=9)
+
+
+def plot_pca_panels(panels, y, path, title):
+    """Side-by-side 2-D PCA scatter plots, one panel per (name, features) pair.
+
+    PCA is fit on the plotted points themselves (validation clips) - it is only
+    a 2-D view; no model uses it.
+    """
+    fig, axes = plt.subplots(1, len(panels), figsize=(5.2 * len(panels), 4.6))
+    # Draw points in random order (in 20 chunks), so no genre is always painted on top
+    order = np.random.default_rng(42).permutation(len(y))
+    for ax, (name, Z) in zip(axes, panels):
+        pca = PCA(n_components=2, random_state=42).fit(Z)
+        points = pca.transform(Z)
+        for chunk in np.array_split(order, 20):
+            for label in range(len(GENRE_NAMES)):
+                idx = chunk[y[chunk] == label]
+                ax.scatter(points[idx, 0], points[idx, 1], s=12, alpha=0.55,
+                           color=GENRE_COLORS[label], marker=GENRE_MARKERS[label],
+                           edgecolors="white", linewidths=0.3)
+
+        # Zoom to the central 98% of points; a few loud outliers would squash the rest
+        low, high = np.percentile(points, [1, 99], axis=0)
+        margin = 0.1 * (high - low)
+        ax.set_xlim(low[0] - margin[0], high[0] + margin[0])
+        ax.set_ylim(low[1] - margin[1], high[1] + margin[1])
+        inside = np.all((points >= low - margin) & (points <= high + margin), axis=1)
+
+        explained = pca.explained_variance_ratio_
+        ax.set_title(f"{name}\n({(~inside).sum()} outlier points outside view)",
+                     color=INK, fontsize=11)
+        ax.set_xlabel(f"PC1 ({explained[0]:.0%} var.)", color=INK, fontsize=9)
+        ax.set_ylabel(f"PC2 ({explained[1]:.0%} var.)", color=INK, fontsize=9)
+        style_axes(ax)
+
+    handles = [Line2D([], [], linestyle="", marker=GENRE_MARKERS[i], color=GENRE_COLORS[i],
+                      markersize=7, label=GENRE_NAMES[i]) for i in range(len(GENRE_NAMES))]
+    fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False,
+               markerscale=1.8, fontsize=10, bbox_to_anchor=(0.5, 0.96))
+    fig.suptitle(title, color=INK, fontsize=12, y=1.02)
+    fig.tight_layout(rect=(0, 0, 1, 0.92))
+    fig.savefig(path, dpi=150, bbox_inches="tight", facecolor="white")
+    plt.close(fig)

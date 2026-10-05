@@ -1,0 +1,4 @@
+representation,knn5_accuracy,linear_probe_accuracy,silhouette
+raw 500-D,0.3207,0.3791,-0.057
+PCA 64-D,0.4997,0.3991,-0.0588
+dense AE 64-D,0.5831,0.6076,-0.0261

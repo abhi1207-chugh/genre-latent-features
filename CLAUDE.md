@@ -107,4 +107,5 @@ Update this list as stages finish.
 - Stage 6 — done (src/preprocessing/dataset.py: load_split → standardized X, y, track_id; ClipDataset; make_loader with seeded shuffle; batch 512 → 17 train / 4 val batches).
 - Stage 7 — done (VAL only. raw 5-NN 0.321 clip; raw SVM C=10 0.697 clip / 0.800 track; PCA64 5-NN 0.500; PCA64 SVM C=10 0.670 / 0.783; paper 2-layer NN 0.416. C grid {0.1,1,10,100}, C=10 peak. results/baselines_val.csv).
 - Stage 8 — done (paper dense AE 500-256-192-128-64, ReLU, dropout 0.1, MSE mean per value, lr 1e-4: best ep 404, VAL recon 1.0058 vs zeros 1.1190 vs PCA-64 0.7495 → overfits; kept as is (decision a). AE_reference_error will come from the CNN AE after Stage 11. Watch: if AE_ref ≈ 1.0, 1.5× rule becomes vacuous — raise at Stage 18).
-- Stage 9 — PENDING
+- Stage 9 — done (VAL. 5-NN / linear probe / silhouette: raw 0.321/0.379/-0.057; PCA64 0.500/0.399/-0.059; dense AE 0.583/0.608/-0.026. Observation: per-genre loudness differs hugely (val std classical 0.167, hiphop 1.694)).
+- Stage 10 — PENDING
