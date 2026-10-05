@@ -72,7 +72,7 @@ Transformers, LSTMs, GRUs, attention, MFCCs or Mel-spectrograms in the main mode
 
 ## Open decisions (ask me when we reach the stage — do not decide silently)
 - Stage 5: sample rate / pooling. At 22,050 Hz, 1 s / 40 = 551, not 500. Options: load at 20 kHz (1 s = 20,000 → 500) or keep 22,050 Hz and crop to 20,000 samples. Also global vs per-feature standardization. **DECIDED: resample to 20 kHz on load; global standardization (1 mean, 1 std) fit on train clips only.**
-- Stage 8: vanilla AE encoder — paper's dense encoder or the same CNN encoder as our model (fairness of the 1.5× constraint).
+- Stage 8: vanilla AE encoder — paper's dense encoder or the same CNN encoder as our model (fairness of the 1.5× constraint). **DECIDED: both — paper dense AE in Stage 8 (baseline + dense-vs-CNN comparison); CNN AE (same encoder/decoder as our model) trained after Stage 11 provides AE_reference_error.**
 - Stage 21: how the held-out test set and 5-fold CV coexist, and the early-stopping validation set inside each fold.
 
 ## Project structure
@@ -106,4 +106,5 @@ Update this list as stages finish.
 - Stage 5 — done (20 kHz, 1-s clips, avg-pool 40 → 11,992 × 500; train/val/test clips 8396/1799/1797; unscaled features in clips_unscaled.npz + scaler.json so the scaler can be refit per CV fold).
 - Stage 6 — done (src/preprocessing/dataset.py: load_split → standardized X, y, track_id; ClipDataset; make_loader with seeded shuffle; batch 512 → 17 train / 4 val batches).
 - Stage 7 — done (VAL only. raw 5-NN 0.321 clip; raw SVM C=10 0.697 clip / 0.800 track; PCA64 5-NN 0.500; PCA64 SVM C=10 0.670 / 0.783; paper 2-layer NN 0.416. C grid {0.1,1,10,100}, C=10 peak. results/baselines_val.csv).
-- Stage 8 — PENDING
+- Stage 8 — done (paper dense AE 500-256-192-128-64, ReLU, dropout 0.1, MSE mean per value, lr 1e-4: best ep 404, VAL recon 1.0058 vs zeros 1.1190 vs PCA-64 0.7495 → overfits; kept as is (decision a). AE_reference_error will come from the CNN AE after Stage 11. Watch: if AE_ref ≈ 1.0, 1.5× rule becomes vacuous — raise at Stage 18).
+- Stage 9 — PENDING
