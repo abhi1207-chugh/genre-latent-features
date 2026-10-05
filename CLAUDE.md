@@ -99,4 +99,6 @@ docs/                source documents
 ## Progress log
 Update this list as stages finish.
 - Stage 0 — done (understanding confirmed).
-- Stage 1 — PENDING
+- Stage 1 — done (structure, .gitignore, git repo pushed to github.com/abhi1207-chugh/genre-latent-features).
+- Stage 2 — done (.venv, requirements.txt pinned, src/utils.py: get_device + set_seed; device = mps).
+- Stage 3 — PENDING
