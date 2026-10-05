@@ -101,4 +101,5 @@ Update this list as stages finish.
 - Stage 0 — done (understanding confirmed).
 - Stage 1 — done (structure, .gitignore, git repo pushed to github.com/abhi1207-chugh/genre-latent-features).
 - Stage 2 — done (.venv, requirements.txt pinned, src/utils.py: get_device + set_seed; device = mps).
-- Stage 3 — PENDING
+- Stage 3 — done (Kaggle download script; 400/400 tracks load, all 22050 Hz, ~30 s; 11,992 full 1-s clips; src/config.py holds LABEL_MAP).
+- Stage 4 — PENDING

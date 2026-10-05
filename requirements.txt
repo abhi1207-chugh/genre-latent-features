@@ -5,3 +5,4 @@ scikit-learn==1.9.1
 matplotlib==3.11.2
 librosa==1.0.0
 soundfile==0.14.0
+kaggle==2.2.4

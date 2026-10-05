@@ -1,0 +1,5 @@
+genre,tracks,min_duration_s,mean_duration_s,max_duration_s,total_1s_clips
+classical,100,29.993,30.028,30.489,2998
+country,100,29.982,30.024,30.371,2997
+disco,100,29.993,30.02,30.301,2999
+hiphop,100,29.932,30.089,30.649,2998
