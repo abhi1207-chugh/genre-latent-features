@@ -71,7 +71,7 @@ Transformers, LSTMs, GRUs, attention, MFCCs or Mel-spectrograms in the main mode
 - Plots: loss curves (total, recon, CE, center), confusion matrix, PCA of embeddings, Pareto plot (x = val recon error, y = val 5-NN acc, line at 1.5 × AE_ref, selected model highlighted).
 
 ## Open decisions (ask me when we reach the stage — do not decide silently)
-- Stage 5: sample rate / pooling. At 22,050 Hz, 1 s / 40 = 551, not 500. Options: load at 20 kHz (1 s = 20,000 → 500) or keep 22,050 Hz and crop to 20,000 samples. Also global vs per-feature standardization.
+- Stage 5: sample rate / pooling. At 22,050 Hz, 1 s / 40 = 551, not 500. Options: load at 20 kHz (1 s = 20,000 → 500) or keep 22,050 Hz and crop to 20,000 samples. Also global vs per-feature standardization. **DECIDED: resample to 20 kHz on load; global standardization (1 mean, 1 std) fit on train clips only.**
 - Stage 8: vanilla AE encoder — paper's dense encoder or the same CNN encoder as our model (fairness of the 1.5× constraint).
 - Stage 21: how the held-out test set and 5-fold CV coexist, and the early-stopping validation set inside each fold.
 
@@ -103,4 +103,5 @@ Update this list as stages finish.
 - Stage 2 — done (.venv, requirements.txt pinned, src/utils.py: get_device + set_seed; device = mps).
 - Stage 3 — done (Kaggle download script; 400/400 tracks load, all 22050 Hz, ~30 s; 11,992 full 1-s clips; src/config.py holds LABEL_MAP).
 - Stage 4 — done (70/15/15 track split, stratified, seed 42: 280/60/60 tracks = 70/15/15 per genre; data/processed/split.csv; test set locked until Stage 20).
-- Stage 5 — PENDING
+- Stage 5 — done (20 kHz, 1-s clips, avg-pool 40 → 11,992 × 500; train/val/test clips 8396/1799/1797; unscaled features in clips_unscaled.npz + scaler.json so the scaler can be refit per CV fold).
+- Stage 6 — PENDING
