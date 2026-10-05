@@ -104,4 +104,5 @@ Update this list as stages finish.
 - Stage 3 — done (Kaggle download script; 400/400 tracks load, all 22050 Hz, ~30 s; 11,992 full 1-s clips; src/config.py holds LABEL_MAP).
 - Stage 4 — done (70/15/15 track split, stratified, seed 42: 280/60/60 tracks = 70/15/15 per genre; data/processed/split.csv; test set locked until Stage 20).
 - Stage 5 — done (20 kHz, 1-s clips, avg-pool 40 → 11,992 × 500; train/val/test clips 8396/1799/1797; unscaled features in clips_unscaled.npz + scaler.json so the scaler can be refit per CV fold).
-- Stage 6 — PENDING
+- Stage 6 — done (src/preprocessing/dataset.py: load_split → standardized X, y, track_id; ClipDataset; make_loader with seeded shuffle; batch 512 → 17 train / 4 val batches).
+- Stage 7 — PENDING
