@@ -105,4 +105,5 @@ Update this list as stages finish.
 - Stage 4 — done (70/15/15 track split, stratified, seed 42: 280/60/60 tracks = 70/15/15 per genre; data/processed/split.csv; test set locked until Stage 20).
 - Stage 5 — done (20 kHz, 1-s clips, avg-pool 40 → 11,992 × 500; train/val/test clips 8396/1799/1797; unscaled features in clips_unscaled.npz + scaler.json so the scaler can be refit per CV fold).
 - Stage 6 — done (src/preprocessing/dataset.py: load_split → standardized X, y, track_id; ClipDataset; make_loader with seeded shuffle; batch 512 → 17 train / 4 val batches).
-- Stage 7 — PENDING
+- Stage 7 — done (VAL only. raw 5-NN 0.321 clip; raw SVM C=10 0.697 clip / 0.800 track; PCA64 5-NN 0.500; PCA64 SVM C=10 0.670 / 0.783; paper 2-layer NN 0.416. C grid {0.1,1,10,100}, C=10 peak. results/baselines_val.csv).
+- Stage 8 — PENDING
