@@ -102,4 +102,5 @@ Update this list as stages finish.
 - Stage 1 — done (structure, .gitignore, git repo pushed to github.com/abhi1207-chugh/genre-latent-features).
 - Stage 2 — done (.venv, requirements.txt pinned, src/utils.py: get_device + set_seed; device = mps).
 - Stage 3 — done (Kaggle download script; 400/400 tracks load, all 22050 Hz, ~30 s; 11,992 full 1-s clips; src/config.py holds LABEL_MAP).
-- Stage 4 — PENDING
+- Stage 4 — done (70/15/15 track split, stratified, seed 42: 280/60/60 tracks = 70/15/15 per genre; data/processed/split.csv; test set locked until Stage 20).
+- Stage 5 — PENDING

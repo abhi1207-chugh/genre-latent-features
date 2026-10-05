@@ -1,0 +1,6 @@
+genre,train,val,test,total
+classical,70,15,15,100
+country,70,15,15,100
+disco,70,15,15,100
+hiphop,70,15,15,100
+total,280,60,60,400
