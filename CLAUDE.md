@@ -111,4 +111,5 @@ Update this list as stages finish.
 - Stage 10 — done (APPROVED design: 4 blocks Conv1d→BN→ReLU→MaxPool2, channels 16/32/64/64, kernels 9/7/5/3, (1,500)→(64,31); head A = Flatten 1984 → Dropout 0.1 → Linear → z 64, no activation; ≈153.8k params. Decoder mirrors: Linear 64→1984 → (64,31) → Upsample+Conv+BN+ReLU to 62/125/250 → Upsample 500 → Conv 16→1, no activation).
 - Stage 11 — done (CNN AE: encoder 153,824 + decoder 155,553 params; trained recon-only 432 ep / 1536 s on mps, best ep 412; VAL recon 0.8020 = AE_reference_error (results/ae_reference.json). 1.5× = 1.203 > zeros 1.119 → rule vacuous, ASK at Stage 18. ~3.6 s/epoch → 27-run grid ≈ 11.5 h; propose speed-ups at Stage 16).
 - Stage 12 — done (GenreClassifier 64→32→16→4, ReLU + Dropout 0.1, raw logits, 2,676 params; checked CE on raw logits, softmax only at inference, gradient reaches encoder).
-- Stage 13 — PENDING
+- Stage 13 — done (CenterLoss: 0.5·mean||z−c_y||², centers = buffer init 0, Wen update c_j −= α·Σ(c_j−z_i)/(1+n_j); all checks match hand calc. Random 64-D z gives center loss ≈ 32 vs recon ≈ 0.8, CE ≈ 1.4 → watch scale; watch z-collapse in Stage 15).
+- Stage 14 — PENDING
