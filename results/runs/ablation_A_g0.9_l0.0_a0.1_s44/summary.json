@@ -1,0 +1,17 @@
+{
+  "name": "ablation_A_g0.9_l0.0_a0.1_s44",
+  "gamma": 0.9,
+  "lambda": 0.0,
+  "alpha": 0.1,
+  "seed": 44,
+  "best_epoch": 290,
+  "epochs_run": 310,
+  "val_total": 0.9789947458874723,
+  "val_recon": 0.9867822754177669,
+  "val_ce": 0.9089073193875069,
+  "val_center": 88.78797248471373,
+  "val_classifier_accuracy": 0.8237909949972206,
+  "val_knn5_accuracy": 0.8315730961645359,
+  "mean_z_norm_val": 19.61347007751465,
+  "train_minutes_this_session": 12.23530790011088
+}
