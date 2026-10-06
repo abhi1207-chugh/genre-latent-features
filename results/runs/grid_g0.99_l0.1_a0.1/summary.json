@@ -1,0 +1,17 @@
+{
+  "name": "grid_g0.99_l0.1_a0.1",
+  "gamma": 0.99,
+  "lambda": 0.1,
+  "alpha": 0.1,
+  "seed": 42,
+  "best_epoch": 454,
+  "epochs_run": 474,
+  "val_total": 0.8613921118286201,
+  "val_recon": 0.8591285523207337,
+  "val_ce": 0.6850727753482838,
+  "val_center": 0.04004175547694683,
+  "val_classifier_accuracy": 0.7292940522512507,
+  "val_knn5_accuracy": 0.6859366314619233,
+  "mean_z_norm_val": 0.37402498722076416,
+  "train_minutes_this_session": 31.48529518842697
+}

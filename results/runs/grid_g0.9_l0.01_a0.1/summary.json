@@ -1,0 +1,17 @@
+{
+  "name": "stage16_g0.9_l0.01_a0.1",
+  "gamma": 0.9,
+  "lambda": 0.01,
+  "alpha": 0.1,
+  "seed": 42,
+  "best_epoch": 280,
+  "epochs_run": 300,
+  "val_total": 0.9532797083449138,
+  "val_recon": 0.9602687935354711,
+  "val_ce": 0.7835564435754239,
+  "val_center": 1.0682193232351307,
+  "val_classifier_accuracy": 0.7854363535297387,
+  "val_knn5_accuracy": 0.7948860478043357,
+  "mean_z_norm_val": 3.3726577758789062,
+  "train_minutes_this_session": 11.680151903629303
+}
