@@ -27,9 +27,10 @@ class CombinedLoss(nn.Module):
         center = self.center_loss(z, y)
         total = self.gamma * recon + (1 - self.gamma) * ce + self.lam * center
 
-        # Each term logged separately (plain floats, so no graph is kept)
-        terms = {"total": total.item(), "recon": recon.item(),
-                 "ce": ce.item(), "center": center.item()}
+        # Each term logged separately. Kept as detached GPU tensors (not .item()),
+        # so the GPU never waits for the CPU; convert with float() when printing.
+        terms = {"total": total.detach(), "recon": recon.detach(),
+                 "ce": ce.detach(), "center": center.detach()}
         return total, terms
 
     def update_centers(self, z, y):

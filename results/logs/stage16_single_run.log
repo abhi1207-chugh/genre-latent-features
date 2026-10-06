@@ -1,0 +1,32 @@
+[stage16_g0.9_l0.01_a0.1] epoch   1  train total 1.1402  val total 1.1544  val recon 1.1213  val CE 1.3922  val acc 0.250  (best epoch 1)
+[stage16_g0.9_l0.01_a0.1] epoch  25  train total 1.0042  val total 1.0950  val recon 1.1191  val CE 0.8105  val acc 0.715  (best epoch 25)
+[stage16_g0.9_l0.01_a0.1] epoch  50  train total 0.9669  val total 1.0781  val recon 1.1190  val CE 0.6019  val acc 0.765  (best epoch 45)
+[stage16_g0.9_l0.01_a0.1] epoch  75  train total 0.9492  val total 1.0704  val recon 1.1192  val CE 0.5379  val acc 0.794  (best epoch 67)
+[stage16_g0.9_l0.01_a0.1] epoch 100  train total 0.9377  val total 1.0765  val recon 1.1200  val CE 0.5878  val acc 0.796  (best epoch 83)
+[stage16_g0.9_l0.01_a0.1] epoch 125  train total 0.8934  val total 1.0641  val recon 1.1010  val CE 0.6147  val acc 0.792  (best epoch 125)
+[stage16_g0.9_l0.01_a0.1] epoch 150  train total 0.8026  val total 1.0168  val recon 1.0425  val CE 0.6547  val acc 0.789  (best epoch 147)
+[stage16_g0.9_l0.01_a0.1] epoch 175  train total 0.7592  val total 1.0080  val recon 1.0195  val CE 0.7778  val acc 0.761  (best epoch 174)
+[stage16_g0.9_l0.01_a0.1] epoch 200  train total 0.7333  val total 0.9882  val recon 1.0069  val CE 0.7034  val acc 0.785  (best epoch 196)
+[stage16_g0.9_l0.01_a0.1] epoch 225  train total 0.7105  val total 0.9762  val recon 0.9940  val CE 0.7060  val acc 0.798  (best epoch 225)
+[stage16_g0.9_l0.01_a0.1] epoch 250  train total 0.6862  val total 0.9836  val recon 0.9779  val CE 0.9154  val acc 0.770  (best epoch 247)
+[stage16_g0.9_l0.01_a0.1] epoch 275  train total 0.6682  val total 0.9552  val recon 0.9634  val CE 0.7751  val acc 0.790  (best epoch 267)
+[stage16_g0.9_l0.01_a0.1] epoch 300  train total 0.6531  val total 0.9535  val recon 0.9548  val CE 0.8358  val acc 0.784  (best epoch 280)
+
+Summary (validation, best epoch):
+  name                         stage16_g0.9_l0.01_a0.1
+  gamma                        0.9000
+  lambda                       0.0100
+  alpha                        0.1000
+  seed                         42
+  best_epoch                   280
+  epochs_run                   300
+  val_total                    0.9533
+  val_recon                    0.9603
+  val_ce                       0.7836
+  val_center                   1.0682
+  val_classifier_accuracy      0.7854
+  val_knn5_accuracy            0.7949
+  mean_z_norm_val              3.3727
+  train_minutes_this_session   11.6802
+
+  AE_reference_error           0.8020   (val recon / reference = 1.197)

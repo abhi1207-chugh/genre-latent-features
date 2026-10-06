@@ -62,13 +62,15 @@ Transformers, LSTMs, GRUs, attention, MFCCs or Mel-spectrograms in the main mode
 - Training: PyTorch, Adam, lr 1e-4, batch 512, latent 64, dropout ~0.1, early stopping on validation, fixed seeds, checkpoints, resumable experiments.
 - Vanilla autoencoder (reconstruction only) → its validation reconstruction error = `AE_reference_error`.
 - Grid: γ ∈ {0.5, 0.9, 0.99}, λ ∈ {0.001, 0.01, 0.1}, α ∈ {0.01, 0.1, 0.5} → 27 runs. Validation data only.
+  **USER DECISION (Oct 6, deviates from write-up): reduced to 9 runs — γ × λ as above, α FIXED at 0.1 (not searched; report must say the effect of α was not studied).**
 - Selection (automatic): valid if val recon error ≤ 1.5 × AE_reference_error; among valid, highest val 5-NN accuracy on frozen 64-D embeddings; if within ~1 percentage point, prefer lower recon error.
+  **USER DECISION: keep this rule as written (R0). Known weakness: 1.5 × 0.8020 = 1.203 > trivial "output zeros" error 1.119, so a non-reconstructing model can pass — show E_trivial on the table/Pareto plot and list as a limitation.**
 - Baselines: raw 500-D + kNN, raw 500-D + SVM, PCA + classifier, simple NN classifier, vanilla AE embeddings.
 - Embedding evaluation: 5-NN probe, linear probe, silhouette score, PCA (mandatory), t-SNE/UMAP optional.
 - Metrics: accuracy, precision, recall, F1, confusion matrix — at clip level AND track level (track = average clip probability vectors, then argmax).
 - Ablation: Model A (recon + CE) vs Model B (recon + CE + center), same everything else.
 - Final: 5-fold StratifiedGroupKFold, group = track_id, report mean ± std.
-- Plots: loss curves (total, recon, CE, center), confusion matrix, PCA of embeddings, Pareto plot (x = val recon error, y = val 5-NN acc, line at 1.5 × AE_ref, selected model highlighted).
+- Plots: loss curves (total, recon, CE, center), confusion matrix, PCA of embeddings, Pareto plot (x = val recon error, y = val 5-NN acc, line at 1.5 × AE_ref, selected model highlighted; also mark trivial error 1.119).
 
 ## Open decisions (ask me when we reach the stage — do not decide silently)
 - Stage 5: sample rate / pooling. At 22,050 Hz, 1 s / 40 = 551, not 500. Options: load at 20 kHz (1 s = 20,000 → 500) or keep 22,050 Hz and crop to 20,000 samples. Also global vs per-feature standardization. **DECIDED: resample to 20 kHz on load; global standardization (1 mean, 1 std) fit on train clips only.**
@@ -94,7 +96,7 @@ docs/                source documents
 ```
 
 ## Stage order
-0 Understand project · 1 Project setup · 2 Environment · 3 Dataset inspection · 4 Track-level split · 5 Audio preprocessing · 6 Dataset/DataLoader · 7 Raw-feature baselines · 8 Vanilla AE · 9 Vanilla embeddings evaluation · 10 Design CNN encoder (show shapes, wait for approval) · 11 CNN encoder + decoder · 12 Add classifier · 13 Center loss module (test on dummy data) · 14 Full model + combined loss · 15 Smoke test · 16 Reusable training function (test ONE config) · 17 27-run grid · 18 Model selection + Pareto plot · 19 Center-loss ablation · 20 Final evaluation (clip + track) · 21 Grouped 5-fold CV · 22 Final embedding analysis · 23 Results organization · 24 README · 25 Viva prep (one question at a time)
+0 Understand project · 1 Project setup · 2 Environment · 3 Dataset inspection · 4 Track-level split · 5 Audio preprocessing · 6 Dataset/DataLoader · 7 Raw-feature baselines · 8 Vanilla AE · 9 Vanilla embeddings evaluation · 10 Design CNN encoder (show shapes, wait for approval) · 11 CNN encoder + decoder · 12 Add classifier · 13 Center loss module (test on dummy data) · 14 Full model + combined loss · 15 Smoke test · 16 Reusable training function (test ONE config) · 17 Grid (9 runs, α = 0.1) · 18 Model selection + Pareto plot · 19 Center-loss ablation · 20 Final evaluation (clip + track) · 21 Grouped 5-fold CV · 22 Final embedding analysis · 23 Results organization · 24 README · 25 Viva prep (one question at a time)
 
 ## Progress log
 Update this list as stages finish.
@@ -114,4 +116,5 @@ Update this list as stages finish.
 - Stage 13 — done (CenterLoss: 0.5·mean||z−c_y||², centers = buffer init 0, Wen update c_j −= α·Σ(c_j−z_i)/(1+n_j); all checks match hand calc. Random 64-D z gives center loss ≈ 32 vs recon ≈ 0.8, CE ≈ 1.4 → watch scale; watch z-collapse in Stage 15).
 - Stage 14 — done (GenreAutoencoder = CNN enc + dec + classifier, 312,053 params; CombinedLoss(gamma, lam, alpha), L_recon = MSE mean per value (DECIDED), center loss always logged; update_centers after optimizer.step; checks: formula, grads, λ=0 ≡ no center term, γ=1 λ=0 ≡ MSE).
 - Stage 15 — done (1024-clip subset, 150 ep, γ0.9 λ0.01 α0.1, 45 s: no NaN, total 1.200→1.016, CE 1.396→1.002, train acc 0.21→0.62, no z collapse (|z| 1.76→3.92, center spread 0.27→1.93); recon stalled ≈1.004 — must drop below 1.0 in Stage 16 full run).
-- Stage 16 — PENDING
+- Stage 16 — done (train_model.py: GPUBatches, no per-batch syncs, vectorized center update, last.pt every 5 ep + atomic save, MPS→CPU fallback; AMP measured slower → removed; 2 processes = 1.27× throughput. First run with min_epochs=100 stopped at ep 103 with recon 1.119 (decoder never learned); diagnostic showed recon leaves plateau at ep 124. RULE A (approved): min_epochs 300, patience 20, max 500, best = lowest val total. Official run γ0.9 λ0.01 α0.1: best ep 280/300, 11.7 min, val recon 0.9603 (ratio 1.197), val 5-NN 0.7949, classifier acc 0.7854.)
+- Stage 17 — PENDING (9-run grid; config γ0.9 λ0.01 reuses the Stage 16 run)

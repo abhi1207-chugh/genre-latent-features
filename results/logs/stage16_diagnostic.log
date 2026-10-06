@@ -1,0 +1,15 @@
+Resumed after epoch 103
+
+ epoch  train_recon  val_recon  val_CE  val_total  val_acc  val_5NN
+   125       0.9437     1.0962  0.5889     1.0571    0.793    0.796
+   150       0.8473     1.0374  0.7168     1.0193    0.778    0.792
+   175       0.8040     1.0152  0.7375     0.9999    0.769    0.791
+   200       0.7765     1.0044  0.7666     0.9924    0.768    0.789
+   225       0.7525     0.9939  0.6734     0.9728    0.809    0.797
+   250       0.7286     0.9763  0.7875     0.9687    0.783    0.786
+   275       0.7091     0.9619  0.7493     0.9513    0.792    0.785
+   300       0.6924     0.9526  0.8974     0.9578    0.785    0.791
+
+Lowest val total over epochs 1-300: epoch 292 (val total 0.9456, val recon 0.9546, val CE 0.7605)
+First epoch with val recon < 1.10: 124
+Saved results/runs/stage16_diagnostic_to300.csv

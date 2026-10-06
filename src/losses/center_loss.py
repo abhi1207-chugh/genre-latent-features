@@ -35,12 +35,15 @@ class CenterLoss(nn.Module):
 
     @torch.no_grad()
     def update_centers(self, z, y):
-        """Move each genre's center towards that genre's embeddings in this batch."""
+        """Move each genre's center towards that genre's embeddings in this batch.
+
+        All genres at once (no Python loop, so the GPU never has to wait for the CPU):
+            sum_j (c_j - z_i) = n_j * c_j - (sum of z_i of genre j)
+        A genre absent from the batch has n_j = 0 and sum 0, so delta = 0: unchanged.
+        """
         z = z.detach()
-        for j in range(len(self.centers)):
-            in_class = y == j
-            n_j = int(in_class.sum())
-            if n_j == 0:
-                continue                                      # genre absent: center unchanged
-            delta = (self.centers[j] - z[in_class]).sum(dim=0) / (1 + n_j)
-            self.centers[j] -= self.alpha * delta
+        n_classes = len(self.centers)
+        counts = torch.bincount(y, minlength=n_classes).float().unsqueeze(1)   # (K, 1) = n_j
+        z_sums = torch.zeros_like(self.centers).index_add_(0, y, z)            # (K, D)
+        delta = (counts * self.centers - z_sums) / (1 + counts)
+        self.centers -= self.alpha * delta

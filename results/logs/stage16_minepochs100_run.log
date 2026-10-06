@@ -1,0 +1,25 @@
+[stage16_g0.9_l0.01_a0.1] epoch   1  train total 1.1402  val total 1.1544  val recon 1.1213  val CE 1.3922  val acc 0.250  (best epoch 1)
+[stage16_g0.9_l0.01_a0.1] epoch  25  train total 1.0042  val total 1.0950  val recon 1.1190  val CE 0.8107  val acc 0.717  (best epoch 25)
+[stage16_g0.9_l0.01_a0.1] epoch  50  train total 0.9667  val total 1.0787  val recon 1.1191  val CE 0.6072  val acc 0.762  (best epoch 45)
+[stage16_g0.9_l0.01_a0.1] epoch  75  train total 0.9492  val total 1.0707  val recon 1.1192  val CE 0.5400  val acc 0.792  (best epoch 67)
+[stage16_g0.9_l0.01_a0.1] epoch 100  train total 0.9376  val total 1.0764  val recon 1.1198  val CE 0.5880  val acc 0.793  (best epoch 83)
+[stage16_g0.9_l0.01_a0.1] epoch 103  train total 0.9369  val total 1.0762  val recon 1.1201  val CE 0.5834  val acc 0.792  (best epoch 83)
+
+Summary (validation, best epoch):
+  name                         stage16_g0.9_l0.01_a0.1
+  gamma                        0.9000
+  lambda                       0.0100
+  alpha                        0.1000
+  seed                         42
+  best_epoch                   83
+  epochs_run                   103
+  val_total                    1.0702
+  val_recon                    1.1192
+  val_ce                       0.5357
+  val_center                   0.9320
+  val_classifier_accuracy      0.7988
+  val_knn5_accuracy            0.7960
+  mean_z_norm_val              4.6140
+  train_minutes_this_session   4.0487
+
+  AE_reference_error           0.8020   (val recon / reference = 1.396)
