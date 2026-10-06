@@ -124,4 +124,5 @@ Update this list as stages finish.
 - Stage 21 — SKIPPED (user decision Oct 6: no further long training; CV is an optional robustness evaluation, NOT RUN).
 - Finalization — inference/export package done (export/genre_model.pt + src/inference/predict.py; reproduces Stage 20 test exactly: clip 0.7323, track 0.8667).
 - Stage 22 — done (TEST, probes fit on train. 5-NN / linear / silhouette: raw 0.329/0.310/−0.078; PCA 0.436/0.404/−0.081; dense AE 0.520/0.546/−0.058; CNN AE 0.554/0.545/+0.075; Model A 0.770/0.772/0.096; Model B 0.731/0.725/0.092. Classical well separated everywhere (sil 0.66–0.85); Country/Disco/Hip-Hop overlap. Isolated Disco island = all 30 clips of disco.00069 (song-specific → shows why track split matters). figures/pca_embeddings_test.png, tsne_embeddings_test.png)
-- Stage 23 — PENDING
+- Stage 23 — done (added figures: architecture, loss_curves_selected, reconstructions_test, model_comparison_test; results/README.md indexes every write-up table/figure → file + script; CV marked NOT RUN, α not studied, R0 weakness listed.)
+- Stage 24 — PENDING
