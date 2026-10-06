@@ -112,4 +112,5 @@ Update this list as stages finish.
 - Stage 11 — done (CNN AE: encoder 153,824 + decoder 155,553 params; trained recon-only 432 ep / 1536 s on mps, best ep 412; VAL recon 0.8020 = AE_reference_error (results/ae_reference.json). 1.5× = 1.203 > zeros 1.119 → rule vacuous, ASK at Stage 18. ~3.6 s/epoch → 27-run grid ≈ 11.5 h; propose speed-ups at Stage 16).
 - Stage 12 — done (GenreClassifier 64→32→16→4, ReLU + Dropout 0.1, raw logits, 2,676 params; checked CE on raw logits, softmax only at inference, gradient reaches encoder).
 - Stage 13 — done (CenterLoss: 0.5·mean||z−c_y||², centers = buffer init 0, Wen update c_j −= α·Σ(c_j−z_i)/(1+n_j); all checks match hand calc. Random 64-D z gives center loss ≈ 32 vs recon ≈ 0.8, CE ≈ 1.4 → watch scale; watch z-collapse in Stage 15).
-- Stage 14 — PENDING
+- Stage 14 — done (GenreAutoencoder = CNN enc + dec + classifier, 312,053 params; CombinedLoss(gamma, lam, alpha), L_recon = MSE mean per value (DECIDED), center loss always logged; update_centers after optimizer.step; checks: formula, grads, λ=0 ≡ no center term, γ=1 λ=0 ≡ MSE).
+- Stage 15 — PENDING
