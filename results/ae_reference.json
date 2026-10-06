@@ -1,0 +1,6 @@
+{
+  "AE_reference_error": 0.8020038801938577,
+  "model": "CNN AE (reconstruction only)",
+  "best_epoch": 412,
+  "split": "val"
+}
