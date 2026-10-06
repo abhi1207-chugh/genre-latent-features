@@ -1,0 +1,11 @@
+{
+  "config": 6,
+  "run": "grid_g0.9_l0.1_a0.1",
+  "gamma": 0.9,
+  "lambda": 0.1,
+  "alpha": 0.1,
+  "best_epoch": 419,
+  "val_recon": 0.927145533325806,
+  "val_knn5_accuracy": 0.8132295719844358,
+  "rule": "R0: val recon <= 1.5 x AE_reference; max val 5-NN; within 1 pp -> lowest val recon"
+}

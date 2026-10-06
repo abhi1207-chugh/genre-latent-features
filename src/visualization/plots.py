@@ -26,6 +26,65 @@ def style_axes(ax):
     ax.tick_params(colors=INK, labelsize=9)
 
 
+def plot_pareto(table, ae_reference, trivial_error, path):
+    """Validation recon error (x) vs validation 5-NN accuracy (y) for the grid runs.
+
+    Colour = γ, marker = λ, each point labelled with its config number.
+    Lines: 1.5 x AE_reference (selection threshold), trivial 'output zeros' error,
+    and AE_reference itself. The selected run gets a black ring; the Pareto
+    front (runs not beaten on both axes) is joined by a grey line.
+    """
+    gammas = sorted(table["gamma"].unique())
+    lambdas = sorted(table["lambda"].unique())
+    colors = dict(zip(gammas, GENRE_COLORS[:len(gammas)]))
+    markers = dict(zip(lambdas, ["o", "s", "^"]))
+
+    fig, ax = plt.subplots(figsize=(8, 5.4))
+    front = table[table["pareto"]].sort_values("val_recon")
+    ax.plot(front["val_recon"], front["val_knn5_accuracy"], color="#bbbbbb",
+            linewidth=2, zorder=1)
+
+    for _, run in table.iterrows():
+        ax.scatter(run["val_recon"], run["val_knn5_accuracy"], s=90,
+                   color=colors[run["gamma"]], marker=markers[run["lambda"]],
+                   edgecolors="white", linewidths=1.5, zorder=3)
+        # Label above-right; below-right if another point sits just above (avoids overlap)
+        crowded = ((abs(table["val_recon"] - run["val_recon"]) < 0.01) &
+                   (table["val_knn5_accuracy"] > run["val_knn5_accuracy"]) &
+                   (table["val_knn5_accuracy"] - run["val_knn5_accuracy"] < 0.006)).any()
+        ax.annotate(f"#{int(run['config'])}", (run["val_recon"], run["val_knn5_accuracy"]),
+                    textcoords="offset points", xytext=(7, -13 if crowded else 5),
+                    fontsize=9, color=INK)
+    chosen = table[table["selected"]].iloc[0]
+    ax.scatter(chosen["val_recon"], chosen["val_knn5_accuracy"], s=320, facecolors="none",
+               edgecolors=INK, linewidths=1.8, zorder=4)
+
+    for x, style, text in [(1.5 * ae_reference, "-", f"1.5 × AE_ref = {1.5 * ae_reference:.3f}\n(selection threshold)"),
+                           (trivial_error, "--", f"output zeros = {trivial_error:.3f}"),
+                           (ae_reference, ":", f"AE_ref = {ae_reference:.3f}")]:
+        ax.axvline(x, color="#777777", linestyle=style, linewidth=1.2, zorder=2)
+        ax.text(x, 0.01, text, transform=ax.get_xaxis_transform(), rotation=90,
+                va="bottom", ha="right", fontsize=8, color="#555555")
+
+    handles = [Line2D([], [], linestyle="", marker="o", markersize=9, color=colors[g],
+                      label=f"γ = {g}") for g in gammas]
+    handles += [Line2D([], [], linestyle="", marker=markers[l], markersize=8, color="#777777",
+                       label=f"λ = {l}") for l in lambdas]
+    handles += [Line2D([], [], linestyle="", marker="o", markersize=13, markerfacecolor="none",
+                       markeredgecolor=INK, label=f"selected (#{int(chosen['config'])})"),
+                Line2D([], [], color="#bbbbbb", linewidth=2, label="Pareto front")]
+    ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1.01, 0.5), frameon=False, fontsize=9)
+
+    ax.set_xlabel("Validation reconstruction error (MSE per value) — lower is better", color=INK, fontsize=10)
+    ax.set_ylabel("Validation 5-NN accuracy on 64-D embeddings", color=INK, fontsize=10)
+    ax.set_title("Grid runs (α = 0.1): reconstruction vs genre information", color=INK, fontsize=12)
+    ax.set_xlim(ae_reference - 0.05, 1.5 * ae_reference + 0.02)
+    style_axes(ax)
+    fig.tight_layout()
+    fig.savefig(path, dpi=150, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+
 def plot_pca_panels(panels, y, path, title):
     """Side-by-side 2-D PCA scatter plots, one panel per (name, features) pair.
 
