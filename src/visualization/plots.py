@@ -26,6 +26,37 @@ def style_axes(ax):
     ax.tick_params(colors=INK, labelsize=9)
 
 
+def plot_confusion_panels(panels, path, title):
+    """Side-by-side confusion matrices. panels = [(name, matrix of counts), ...].
+
+    Cell colour = share of the TRUE genre's items (row-normalised, one blue ramp);
+    each cell shows the count and that percentage.
+    """
+    from matplotlib.colors import LinearSegmentedColormap
+    blues = LinearSegmentedColormap.from_list("blues", ["#f4f8fd", "#86b6ef", "#2a78d6", "#0d366b"])
+
+    fig, axes = plt.subplots(1, len(panels), figsize=(4.6 * len(panels), 4.4))
+    for ax, (name, counts) in zip(np.atleast_1d(axes), panels):
+        shares = counts / counts.sum(axis=1, keepdims=True)
+        ax.imshow(shares, cmap=blues, vmin=0, vmax=1)
+        for i in range(len(GENRE_NAMES)):
+            for j in range(len(GENRE_NAMES)):
+                ink = "white" if shares[i, j] > 0.55 else INK
+                ax.text(j, i, f"{counts[i, j]}\n{shares[i, j]:.0%}", ha="center", va="center",
+                        fontsize=9, color=ink)
+        ax.set_xticks(range(4), GENRE_NAMES, fontsize=9, color=INK)
+        ax.set_yticks(range(4), GENRE_NAMES, fontsize=9, color=INK)
+        ax.set_xlabel("Predicted genre", color=INK, fontsize=10)
+        ax.set_ylabel("True genre", color=INK, fontsize=10)
+        ax.set_title(name, color=INK, fontsize=10)
+        for side in ax.spines.values():
+            side.set_visible(False)
+    fig.suptitle(title, color=INK, fontsize=12)
+    fig.tight_layout()
+    fig.savefig(path, dpi=150, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+
+
 def plot_pareto(table, ae_reference, trivial_error, path):
     """Validation recon error (x) vs validation 5-NN accuracy (y) for the grid runs.
 
