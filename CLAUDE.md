@@ -69,13 +69,13 @@ Transformers, LSTMs, GRUs, attention, MFCCs or Mel-spectrograms in the main mode
 - Embedding evaluation: 5-NN probe, linear probe, silhouette score, PCA (mandatory), t-SNE/UMAP optional.
 - Metrics: accuracy, precision, recall, F1, confusion matrix — at clip level AND track level (track = average clip probability vectors, then argmax).
 - Ablation: Model A (recon + CE) vs Model B (recon + CE + center), same everything else.
-- Final: 5-fold StratifiedGroupKFold, group = track_id, report mean ± std.
+- Final: 5-fold StratifiedGroupKFold, group = track_id, report mean ± std. **NOT RUN (Stage 21 skipped by user decision; optional robustness evaluation).**
 - Plots: loss curves (total, recon, CE, center), confusion matrix, PCA of embeddings, Pareto plot (x = val recon error, y = val 5-NN acc, line at 1.5 × AE_ref, selected model highlighted; also mark trivial error 1.119).
 
 ## Open decisions (ask me when we reach the stage — do not decide silently)
 - Stage 5: sample rate / pooling. At 22,050 Hz, 1 s / 40 = 551, not 500. Options: load at 20 kHz (1 s = 20,000 → 500) or keep 22,050 Hz and crop to 20,000 samples. Also global vs per-feature standardization. **DECIDED: resample to 20 kHz on load; global standardization (1 mean, 1 std) fit on train clips only.**
 - Stage 8: vanilla AE encoder — paper's dense encoder or the same CNN encoder as our model (fairness of the 1.5× constraint). **DECIDED: both — paper dense AE in Stage 8 (baseline + dense-vs-CNN comparison); CNN AE (same encoder/decoder as our model) trained after Stage 11 provides AE_reference_error.**
-- Stage 21: how the held-out test set and 5-fold CV coexist, and the early-stopping validation set inside each fold.
+- Stage 21: how the held-out test set and 5-fold CV coexist, and the early-stopping validation set inside each fold. **DECIDED (Oct 6): Stage 21 SKIPPED by user — no more long training. 5-fold StratifiedGroupKFold was NOT RUN; report/README must say so and must not present any CV mean ± std. Results are single-split (+ 3 seeds for A/B).**
 
 ## Project structure
 ```
@@ -96,7 +96,7 @@ docs/                source documents
 ```
 
 ## Stage order
-0 Understand project · 1 Project setup · 2 Environment · 3 Dataset inspection · 4 Track-level split · 5 Audio preprocessing · 6 Dataset/DataLoader · 7 Raw-feature baselines · 8 Vanilla AE · 9 Vanilla embeddings evaluation · 10 Design CNN encoder (show shapes, wait for approval) · 11 CNN encoder + decoder · 12 Add classifier · 13 Center loss module (test on dummy data) · 14 Full model + combined loss · 15 Smoke test · 16 Reusable training function (test ONE config) · 17 Grid (9 runs, α = 0.1) · 18 Model selection + Pareto plot · 19 Center-loss ablation · 20 Final evaluation (clip + track) · 21 Grouped 5-fold CV · 22 Final embedding analysis · 23 Results organization · 24 README · 25 Viva prep (one question at a time)
+0 Understand project · 1 Project setup · 2 Environment · 3 Dataset inspection · 4 Track-level split · 5 Audio preprocessing · 6 Dataset/DataLoader · 7 Raw-feature baselines · 8 Vanilla AE · 9 Vanilla embeddings evaluation · 10 Design CNN encoder (show shapes, wait for approval) · 11 CNN encoder + decoder · 12 Add classifier · 13 Center loss module (test on dummy data) · 14 Full model + combined loss · 15 Smoke test · 16 Reusable training function (test ONE config) · 17 Grid (9 runs, α = 0.1) · 18 Model selection + Pareto plot · 19 Center-loss ablation · 20 Final evaluation (clip + track) · 21 Grouped 5-fold CV (SKIPPED) · 22 Final embedding analysis · 23 Results organization · 24 README · 25 Viva prep (one question at a time)
 
 ## Progress log
 Update this list as stages finish.
@@ -121,4 +121,5 @@ Update this list as stages finish.
 - Stage 18 — done (R0 + tie rule, VAL only: 9/9 valid; best 5-NN 0.8155 (#4); tie candidates #4, #1, #6, #2 → lowest recon → SELECTED #6 γ0.9 λ0.1 α0.1, best ep 419, val recon 0.9271 (ratio 1.156), val 5-NN 0.8132, clf acc 0.8138. On Pareto front (#4, #6, #7, #8). Top 5-NN gap only 0.23 pp, single seed → not proof #6 > #4. results/selected_model.json, figures/pareto_grid_val.png)
 - Stage 19 — done (3 seeds each, VAL. A (γ0.9 λ0) vs B (γ0.9 λ0.1 α0.1): 5-NN 0.830±0.012 vs 0.786±0.024; linear probe 0.815 vs 0.771; clip acc 0.831 vs 0.784; track acc 0.911 vs 0.900; silhouette 0.167 vs 0.166; recon 1.000 vs 0.932; ||z|| 21.1 vs 1.05. Every A seed > every B seed on 5-NN → center loss did NOT help genre metrics (it shrinks z, silhouette unchanged); only recon better (B also trained longer). DECISION (b): evaluate BOTH A and B (all 3 seeds) on test in Stage 20 as a pre-declared pair; selected model = B seed 42.)
 - Stage 20 — done (TEST used once, nothing tuned. Clip/track acc: Model A 3 seeds 0.769±0.009 / 0.878±0.026; Model B 0.730±0.006 / 0.894±0.035; selected B s42 0.732 / 0.867; best baseline raw SVM C=10 0.611 / 0.683; CNN AE 5-NN 0.554 / 0.683; dense AE 5-NN 0.520 / 0.633; paper 2-layer NN 0.385 / 0.283. A > B on clip, 5-NN (−0.051), linear probe (−0.053) for every seed; track +0.017 for B within std. Main confusion Disco↔Hip-Hop. All models lower on test than val.)
-- Stage 21 — PENDING
+- Stage 21 — SKIPPED (user decision Oct 6: no further long training; CV is an optional robustness evaluation, NOT RUN).
+- Finalization — inference/export package for the live demo (export/), then 22–25.

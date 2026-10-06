@@ -12,7 +12,11 @@ def track_to_clips(path):
     """Load one track and return its pooled clips, shape (n_clips, 500)."""
     # librosa resamples 22,050 Hz -> 20,000 Hz while loading
     waveform, _ = librosa.load(path, sr=SAMPLE_RATE, mono=True)
+    return waveform_to_clips(waveform)
 
+
+def waveform_to_clips(waveform):
+    """Mono waveform at 20 kHz -> pooled 1-second clips, shape (n_clips, 500)."""
     # Cut into full 1-second clips; the partial last second is dropped
     n_clips = len(waveform) // CLIP_SAMPLES
     clips = waveform[: n_clips * CLIP_SAMPLES].reshape(n_clips, CLIP_SAMPLES)
