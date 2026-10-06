@@ -117,17 +117,35 @@ def plot_pareto(table, ae_reference, trivial_error, path):
 
 
 def plot_pca_panels(panels, y, path, title):
-    """Side-by-side 2-D PCA scatter plots, one panel per (name, features) pair.
+    """Side-by-side 2-D PCA views (kept for the Stage 9 / 19 scripts)."""
+    plot_2d_panels(panels, y, path, title, method="pca")
 
-    PCA is fit on the plotted points themselves (validation clips) - it is only
-    a 2-D view; no model uses it.
+
+def plot_2d_panels(panels, y, path, title, method="pca", ncols=None):
+    """2-D scatter views of high-dimensional features, one panel per (name, features).
+
+    method "pca":  linear projection, fit on the plotted points themselves.
+    method "tsne": t-SNE (non-linear, keeps local neighbourhoods; distances between
+                   far-apart clusters and axis values are NOT meaningful).
+    Either way it is only a picture - no model uses it.
     """
-    fig, axes = plt.subplots(1, len(panels), figsize=(5.2 * len(panels), 4.6))
+    from sklearn.manifold import TSNE
+
+    ncols = ncols or len(panels)
+    nrows = int(np.ceil(len(panels) / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(5.2 * ncols, 4.6 * nrows), squeeze=False)
     # Draw points in random order (in 20 chunks), so no genre is always painted on top
     order = np.random.default_rng(42).permutation(len(y))
-    for ax, (name, Z) in zip(axes, panels):
-        pca = PCA(n_components=2, random_state=42).fit(Z)
-        points = pca.transform(Z)
+    for ax, (name, Z) in zip(axes.flat, panels):
+        if method == "pca":
+            pca = PCA(n_components=2, random_state=42).fit(Z)
+            points = pca.transform(Z)
+            explained = pca.explained_variance_ratio_
+            x_label, y_label = f"PC1 ({explained[0]:.0%} var.)", f"PC2 ({explained[1]:.0%} var.)"
+        else:
+            points = TSNE(n_components=2, perplexity=30, init="pca", random_state=42).fit_transform(Z)
+            x_label, y_label = "t-SNE 1", "t-SNE 2"
+
         for chunk in np.array_split(order, 20):
             for label in range(len(GENRE_NAMES)):
                 idx = chunk[y[chunk] == label]
@@ -142,18 +160,19 @@ def plot_pca_panels(panels, y, path, title):
         ax.set_ylim(low[1] - margin[1], high[1] + margin[1])
         inside = np.all((points >= low - margin) & (points <= high + margin), axis=1)
 
-        explained = pca.explained_variance_ratio_
         ax.set_title(f"{name}\n({(~inside).sum()} outlier points outside view)",
                      color=INK, fontsize=11)
-        ax.set_xlabel(f"PC1 ({explained[0]:.0%} var.)", color=INK, fontsize=9)
-        ax.set_ylabel(f"PC2 ({explained[1]:.0%} var.)", color=INK, fontsize=9)
+        ax.set_xlabel(x_label, color=INK, fontsize=9)
+        ax.set_ylabel(y_label, color=INK, fontsize=9)
         style_axes(ax)
+    for ax in list(axes.flat)[len(panels):]:
+        ax.set_visible(False)
 
     handles = [Line2D([], [], linestyle="", marker=GENRE_MARKERS[i], color=GENRE_COLORS[i],
                       markersize=7, label=GENRE_NAMES[i]) for i in range(len(GENRE_NAMES))]
     fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False,
-               markerscale=1.8, fontsize=10, bbox_to_anchor=(0.5, 0.96))
-    fig.suptitle(title, color=INK, fontsize=12, y=1.02)
-    fig.tight_layout(rect=(0, 0, 1, 0.92))
+               markerscale=1.8, fontsize=10, bbox_to_anchor=(0.5, 1 - 0.04 / nrows))
+    fig.suptitle(title, color=INK, fontsize=12, y=1 + 0.02 / nrows)
+    fig.tight_layout(rect=(0, 0, 1, 1 - 0.08 / nrows))
     fig.savefig(path, dpi=150, bbox_inches="tight", facecolor="white")
     plt.close(fig)
