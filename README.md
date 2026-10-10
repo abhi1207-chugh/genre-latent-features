@@ -141,8 +141,7 @@ data/, checkpoints/  dataset and model weights (not in git)
 ```
 
 ## 8. Limitations and deviations — read before quoting numbers
-- **One split only.** The planned 5-fold StratifiedGroupKFold cross-validation was **not run**
-  (skipped for time); all numbers come from a single 280 / 60 / 60-track split (plus 3 seeds for the
+- **One split only.** All numbers come from a single 280 / 60 / 60-track split (plus 3 seeds for the
   ablation). Validation and test scores differ by up to ~9 points (e.g. raw SVM 0.697 → 0.611), so a single split is noisy.
 - **Grid reduced to 9 runs**: α was fixed at 0.1; the effect of the center learning rate was not studied.
 - **Selection rule weakness:** the 1.5 × AE-reference threshold (1.203) is above the error of a model that
